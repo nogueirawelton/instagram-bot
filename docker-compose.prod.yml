@@ -25,7 +25,7 @@ services:
     environment:
       PORT: ${SERVER_PORT}
       NODE_ENV: production
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
     volumes:
       - server_media:/app/public/media
       - server_logs:/app/logs
@@ -42,7 +42,7 @@ services:
         NGINX_PASSWORD: ${NGINX_PASSWORD}
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "${NGINX_PORT}:80"
     depends_on:
       - server
 
