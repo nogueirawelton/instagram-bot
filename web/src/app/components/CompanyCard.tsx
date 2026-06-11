@@ -1,7 +1,7 @@
-import { Link } from 'react-router';
-import { RefreshCw, Trash2, Eye, ChevronRight, Instagram } from 'lucide-react';
-import { Company } from '../types';
-import { clsx } from 'clsx';
+import { clsx } from "clsx";
+import { ChevronRight, Eye, Instagram, RefreshCw, Trash2 } from "lucide-react";
+import { Link } from "react-router";
+import { Company } from "../types";
 
 interface CompanyCardProps {
   company: Company;
@@ -10,21 +10,29 @@ interface CompanyCardProps {
   isSyncing?: boolean;
 }
 
-export function CompanyCard({ company, onSync, onDelete, isSyncing }: CompanyCardProps) {
+export function CompanyCard({
+  company,
+  onSync,
+  onDelete,
+  isSyncing,
+}: CompanyCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
+    return new Intl.DateTimeFormat("pt-BR", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
     }).format(date);
   };
 
-  const visibleRatio = company.postsCount > 0 ? (company.visiblePostsCount / company.postsCount) * 100 : 0;
+  const visibleRatio =
+    company.postsCount > 0
+      ? (company.visiblePostsCount / company.postsCount) * 100
+      : 0;
 
   return (
-    <div className="bg-card rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-border/50">
-      <div className="relative h-20 bg-gradient-to-br from-[#007cb2] to-[#005a82] overflow-hidden">
+    <div className="bg-card rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 border border-border/50">
+      <div className="relative h-20 bg-gradient-to-br from-[#007cb2] to-[#005a82]">
         <div className="absolute inset-0 opacity-10">
           <Instagram className="absolute -right-4 -top-4 w-28 h-28 text-white" />
         </div>
@@ -35,7 +43,8 @@ export function CompanyCard({ company, onSync, onDelete, isSyncing }: CompanyCar
               alt={company.name}
               className="w-full h-full object-cover"
               onError={(e) => {
-                (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(company.name)}&background=007cb2&color=fff&size=128`;
+                (e.target as HTMLImageElement).src =
+                  `https://ui-avatars.com/api/?name=${encodeURIComponent(company.name)}&background=007cb2&color=fff&size=128`;
               }}
             />
           </div>
@@ -46,19 +55,23 @@ export function CompanyCard({ company, onSync, onDelete, isSyncing }: CompanyCar
         <div className="flex items-start justify-between">
           <div className="min-w-0 flex-1">
             <h3 className="truncate text-foreground">{company.name}</h3>
-            <p className="text-muted-foreground text-sm mt-0.5">{company.username}</p>
+            <p className="text-muted-foreground text-sm mt-0.5">
+              {company.username}
+            </p>
           </div>
           <div className="flex items-center gap-1 ml-3 shrink-0">
             <button
               onClick={() => onSync(company.id)}
               disabled={isSyncing}
               className={clsx(
-                'p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all',
-                'disabled:opacity-40 disabled:pointer-events-none'
+                "p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all",
+                "disabled:opacity-40 disabled:pointer-events-none",
               )}
               title="Sincronizar"
             >
-              <RefreshCw className={clsx('w-4 h-4', isSyncing && 'animate-spin')} />
+              <RefreshCw
+                className={clsx("w-4 h-4", isSyncing && "animate-spin")}
+              />
             </button>
             <button
               onClick={() => onDelete(company.id)}
@@ -73,13 +86,25 @@ export function CompanyCard({ company, onSync, onDelete, isSyncing }: CompanyCar
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="bg-muted/60 rounded-md px-3 py-2.5">
             <p className="text-xs text-muted-foreground">Posts totais</p>
-            <p className="text-foreground mt-0.5 tabular-nums">{company.postsCount}</p>
+            <p className="text-foreground mt-0.5 tabular-nums">
+              {company.postsCount}
+            </p>
           </div>
-          <div className="rounded-md px-3 py-2.5" style={{ background: 'rgba(0,124,178,0.08)' }}>
-            <p className="text-xs" style={{ color: 'rgba(0,124,178,0.7)' }}>Visíveis</p>
+          <div
+            className="rounded-md px-3 py-2.5"
+            style={{ background: "rgba(0,124,178,0.08)" }}
+          >
+            <p className="text-xs" style={{ color: "rgba(0,124,178,0.7)" }}>
+              Visíveis
+            </p>
             <p className="mt-0.5 tabular-nums text-primary">
               {company.visiblePostsCount}
-              <span className="text-xs ml-1" style={{ color: 'rgba(0,124,178,0.5)' }}>/ {company.postsCount}</span>
+              <span
+                className="text-xs ml-1"
+                style={{ color: "rgba(0,124,178,0.5)" }}
+              >
+                / {company.postsCount}
+              </span>
             </p>
           </div>
         </div>

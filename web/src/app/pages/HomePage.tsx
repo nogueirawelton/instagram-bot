@@ -68,9 +68,16 @@ export function HomePage() {
   };
 
   const handleAddCompany = async (username: string) => {
+    const normalized = username.toLowerCase().replace("@", "");
+    const exists = companies.some((c) => c.id.toLowerCase() === normalized);
+    if (exists) {
+      toast.error(`@${normalized} já está cadastrado`);
+      return;
+    }
+
     const toastId = toast.loading("Buscando dados do perfil…");
     try {
-      await api.addCompany(username);
+      await api.addCompany(normalized);
       toast.success("Empresa adicionada com sucesso", { id: toastId });
       await loadCompanies();
     } catch {
