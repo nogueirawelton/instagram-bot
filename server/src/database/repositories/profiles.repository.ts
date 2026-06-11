@@ -14,7 +14,7 @@ export const ProfilesRepository = {
       SELECT
         p.*,
         COUNT(posts.id)::int AS "postsCount",
-        COUNT(posts.id) FILTER (WHERE posts.pinned = false)::int AS "visiblePostsCount"
+        COUNT(posts.id) FILTER (WHERE posts.visible = true)::int AS "visiblePostsCount"
       FROM profiles p
       LEFT JOIN posts ON posts."profileUsername" = p.username
       GROUP BY p.username
