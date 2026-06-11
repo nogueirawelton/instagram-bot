@@ -5,7 +5,7 @@ import { CompanyPage } from './pages/CompanyPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.VITE_BASE_PATH ?? '/'}>
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<HomePage />} />
