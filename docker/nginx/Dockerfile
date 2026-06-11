@@ -1,5 +1,8 @@
 FROM node:22-alpine AS web-builder
 
+ARG VITE_BASE_PATH=/apps/instagram-api
+ARG VITE_API_BASE_URL
+
 RUN mkdir -p /app && chown node:node /app
 
 WORKDIR /app
@@ -10,7 +13,7 @@ COPY --chown=node:node web/package*.json ./
 RUN npm install
 
 COPY --chown=node:node web/ .
-RUN npm run build
+RUN VITE_BASE_PATH=${VITE_BASE_PATH} VITE_API_BASE_URL=${VITE_API_BASE_URL} npm run build
 
 # ── production ─────────────────────────────────────────────────────────────────
 FROM nginx:alpine
