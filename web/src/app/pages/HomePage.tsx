@@ -1,4 +1,4 @@
-import { Building2, Eye, Instagram, Plus, RefreshCw, Zap } from "lucide-react";
+import { Building2, Eye, Instagram, Plus, RefreshCw, Search, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AddCompanyModal } from "../components/AddCompanyModal";
@@ -12,6 +12,7 @@ export function HomePage() {
   const [syncing, setSyncing] = useState<string | null>(null);
   const [syncingAll, setSyncingAll] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadCompanies();
@@ -80,6 +81,10 @@ export function HomePage() {
   const totalPosts = companies.reduce((sum, c) => sum + c.postsCount, 0);
   const totalVisible = companies.reduce((sum, c) => sum + c.visiblePostsCount, 0);
 
+  const filteredCompanies = companies
+    .filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.username.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -136,34 +141,42 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Stats bar */}
+        {/* Stats bar + busca */}
         {companies.length > 0 && (
           <div className="border-t border-white/10">
-            <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-8">
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <Building2 className="w-4 h-4" />
-                <span>
-                  <span className="text-white font-semibold">
-                    {companies.length}
-                  </span>{" "}
-                  {companies.length === 1 ? "empresa" : "empresas"}
-                </span>
+            <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-6">
+              <div className="flex items-center gap-6 text-white/80 text-sm shrink-0">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-4 h-4" />
+                  <span>
+                    <span className="text-white font-semibold">{companies.length}</span>{" "}
+                    {companies.length === 1 ? "empresa" : "empresas"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  <span>
+                    <span className="text-white font-semibold">{totalPosts}</span>{" "}
+                    posts totais
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  <span>
+                    <span className="text-white font-semibold">{totalVisible}</span>{" "}
+                    visíveis
+                  </span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <Zap className="w-4 h-4" />
-                <span>
-                  <span className="text-white font-semibold">{totalPosts}</span>{" "}
-                  posts totais
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-white/80 text-sm">
-                <Eye className="w-4 h-4" />
-                <span>
-                  <span className="text-white font-semibold">
-                    {totalVisible}
-                  </span>{" "}
-                  visíveis
-                </span>
+
+              <div className="relative ml-auto w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Buscar empresa…"
+                  className="w-full pl-9 pr-4 py-1.5 rounded-md bg-white/10 border border-white/20 text-white text-sm placeholder:text-white/40 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-all"
+                />
               </div>
             </div>
           </div>
@@ -190,9 +203,14 @@ export function HomePage() {
               Adicionar Primeira Empresa
             </button>
           </div>
+        ) : filteredCompanies.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <Search className="w-10 h-10 text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">Nenhuma empresa encontrada para "{search}"</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {companies.map((company) => (
+            {filteredCompanies.map((company) => (
               <CompanyCard
                 key={company.id}
                 company={company}
