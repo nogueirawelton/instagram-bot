@@ -14,10 +14,12 @@ const postsService = new PostsService();
 async function downloadAvatar(url: string, username: string): Promise<string> {
   const fileName = `avatar_${username}.jpg`;
   const filePath = path.join("public", "media", fileName);
+  await fs.mkdir(path.join("public", "media"), { recursive: true }); // ← cria o dir se não existir
   const response = await axios.get<ArrayBuffer>(url, { responseType: "arraybuffer" });
   await fs.writeFile(filePath, Buffer.from(response.data));
   return `/media/${fileName}`;
 }
+
 
 export const ProfilesService = {
   async create(username: string): Promise<Profile> {

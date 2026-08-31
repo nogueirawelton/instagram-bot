@@ -64,10 +64,8 @@ export class Scraper {
         await page.keyboard.press("Enter");
 
         logger.info("Aguardando resposta");
-        await page.screenshot({
-          path: `screenshots/${username}-${Date.now()}.png`,
-          fullPage: true,
-        });
+
+        console.log(page.url())
 
         const postResponse = await postResponsePromise;
         const postData = await postResponse.json();
@@ -75,22 +73,25 @@ export class Scraper {
         const userResponse = await userResponsePromise;
         const userData = await userResponse.json();
 
-        return {
-          user: (userData.result as RawUserResult[]).map((user) => ({
-            fullName: user.user.full_name,
-            profilePicUrl: user.user.profile_pic_url_downloadable,
+        const result = {
+          user: (userData?.result as RawUserResult[]).map((user) => ({
+            fullName: user?.user?.full_name,
+            profilePicUrl: user?.user?.profile_pic_url_downloadable,
           }))[0]!,
-          posts: (postData.result.edges as RawPostEdge[])
+          posts: (postData?.result?.edges as RawPostEdge[])
             .map((item) => ({
-              shortcode: item.node.shortcode,
-              thumbnail: item.node.display_url,
-              pinned: item.node.pinned_for_users.length > 0,
-              createdAt: new Date(item.node.taken_at_timestamp * 1000),
+              shortcode: item?.node?.shortcode,
+              thumbnail: item?.node?.display_url,
+              pinned: item.node?.pinned_for_users?.length > 0,
+              createdAt: new Date(item.node?.taken_at_timestamp * 1000),
             }))
             .filter((item) => item.shortcode && item.thumbnail),
         };
+
+        return result
       } catch (error) {
         lastError = error;
+        console.log(error)
         const delay = Math.pow(2, attempt);
         logger.warn(
           `Tentativa ${attempt + 1} para ${username} falhou. Retry em ${delay}s`,
