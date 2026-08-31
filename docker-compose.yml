@@ -28,6 +28,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT}/${POSTGRES_DB}
     volumes:
       - ./server:/app
+      - server_node_modules:/app/node_modules
+      - server_logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,8 +44,12 @@ services:
       WEB_PORT: ${WEB_PORT}
     volumes:
       - ./web:/app
+      - web_node_modules:/app/node_modules
     depends_on:
       - server
 
 volumes:
   postgres_data:
+  server_node_modules:
+  server_logs:
+  web_node_modules:

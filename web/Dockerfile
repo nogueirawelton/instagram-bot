@@ -1,5 +1,8 @@
 FROM node:22-alpine AS base
 
+# Cria /app com permissão para o usuário node antes de trocar de usuário
+RUN mkdir -p /app && chown node:node /app
+
 WORKDIR /app
 
 # ── development ────────────────────────────────────────────────────────────────
